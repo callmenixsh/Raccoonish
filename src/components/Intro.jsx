@@ -31,13 +31,38 @@ export default function BunnyIntro({ onFinish, milestone, unlockAchievement, con
         className="w-14 h-14 rounded-full bg-amber-400 border-4 border-amber-600 shadow-lg flex items-center justify-center text-2xl text-white"
         onClick={() => {
           setDelivered(true);
-          if (milestone) {
-            if (unlockAchievement) unlockAchievement(`milestone_${milestone}`);
-          } else {
-            if (unlockAchievement) unlockAchievement('hidden_51');
+          try {
+            if (milestone) {
+              if (unlockAchievement) {
+                unlockAchievement(`milestone_${milestone}`);
+                console.log('Milestone achievement unlocked:', `milestone_${milestone}`);
+              } else {
+                console.warn('unlockAchievement function missing');
+              }
+            } else {
+              if (unlockAchievement) {
+                unlockAchievement('hidden_51');
+                console.log('Special achievement unlocked: hidden_51');
+              } else {
+                console.warn('unlockAchievement function missing');
+              }
+            }
+          } catch (e) {
+            console.error('Error unlocking achievement:', e);
           }
-                  setVisible(false);
-                  setTimeout(() => { if (onFinish) onFinish(); }, 300);
+          setVisible(false);
+          setTimeout(() => {
+            if (onFinish) {
+              try {
+                onFinish();
+                console.log('onFinish called');
+              } catch (e) {
+                console.error('Error in onFinish:', e);
+              }
+            } else {
+              console.warn('onFinish function missing');
+            }
+          }, 300);
         }}
       >
         <span className="text-2xl">{coinFor(milestone)}</span>
