@@ -29,49 +29,58 @@ export default function BunnyIntro({ onFinish, milestone, unlockAchievement, con
   const coinIcons = {1: '🪙', 10: '🥇', 20: '⭐', 30: '🏅', 50: '👑', 100: '💎', 150: '✨', 200: '🎖️'};
   const coinFor = (m) => (m ? coinIcons[m] || '🪙' : '🪙');
   const SpecialButton = () => (
-    !delivered && (
+    !delivered && (() => {
+      const label = coinFor(milestone) || '🪙';
+      try { console.debug('SpecialButton render', { milestone, label, delivered }); } catch(e) {}
+      return (
       <button
-        className="w-14 h-14 rounded-full bg-amber-400 border-4 border-amber-600 shadow-lg flex items-center justify-center text-2xl text-white"
-        onClick={() => {
-          setDelivered(true);
-          try {
-            if (milestone) {
-              if (unlockAchievement) {
-                unlockAchievement(`milestone_${milestone}`);
-                console.log('Milestone achievement unlocked:', `milestone_${milestone}`);
-              } else {
-                console.warn('unlockAchievement function missing');
-              }
-            } else {
-              if (unlockAchievement) {
-                unlockAchievement('hidden_51');
-                console.log('Special achievement unlocked: hidden_51');
-              } else {
-                console.warn('unlockAchievement function missing');
-              }
-            }
-          } catch (e) {
-            console.error('Error unlocking achievement:', e);
-          }
-          setVisible(false);
-          setTimeout(() => {
-            if (onFinish) {
-              try {
-                onFinish();
-                console.log('onFinish called');
-              } catch (e) {
-                console.error('Error in onFinish:', e);
-              }
-            } else {
-              console.warn('onFinish function missing');
-            }
-          }, 300);
-        }}
+        className="w-10 h-10 rounded-full bg-amber-400 border-2 border-amber-600 shadow-lg flex items-center justify-center text-xl text-white"
+        style={{ zIndex: 100002, pointerEvents: 'auto', position: 'relative', transition: 'none', animation: 'none' }}
+        onMouseDown={(e) => e.stopPropagation()}
+        onClick={deliverCoin}
       >
-        <span className="text-2xl">{coinFor(milestone)}</span>
+        <span className="text-xl">{label}</span>
       </button>
-    )
+      );
+    })()
   );
+
+  function deliverCoin() {
+    if (delivered) return;
+    setDelivered(true);
+    try {
+      if (milestone) {
+        if (unlockAchievement) {
+          unlockAchievement(`milestone_${milestone}`);
+          console.log('Milestone achievement unlocked:', `milestone_${milestone}`);
+        } else {
+          console.warn('unlockAchievement function missing');
+        }
+      } else {
+        if (unlockAchievement) {
+          unlockAchievement('hidden_51');
+          console.log('Special achievement unlocked: hidden_51');
+        } else {
+          console.warn('unlockAchievement function missing');
+        }
+      }
+    } catch (e) {
+      console.error('Error unlocking achievement:', e);
+    }
+    setVisible(false);
+    setTimeout(() => {
+      if (onFinish) {
+        try {
+          onFinish();
+          console.log('onFinish called');
+        } catch (e) {
+          console.error('Error in onFinish:', e);
+        }
+      } else {
+        console.warn('onFinish function missing');
+      }
+    }, 300);
+  }
 
   const handleNext = () => {
         if (milestone) {
@@ -88,10 +97,10 @@ export default function BunnyIntro({ onFinish, milestone, unlockAchievement, con
   };
 
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none">
+    <div className="fixed inset-0" style={{ zIndex: 100001 }}>
       <div className="pointer-events-auto fixed bottom-6 right-6 flex items-end">
-            <div className={`flex items-center transition-all duration-300 translate-y-20 md:scale-120 ${visible ? 'translate-x-0 opacity-100' : 'translate-x-6 opacity-0'}`}>
-          <div className="bg-white rounded-2xl shadow-xl p-6 max-w-md -translate-y-20 translate-x-10">
+            <div className={`flex items-center translate-y-20 md:scale-120 ${visible ? 'translate-x-0 opacity-100' : 'translate-x-6 opacity-0'}`} style={{ transition: 'none', willChange: 'auto' }}>
+            <div className="bg-white rounded-2xl shadow-xl p-6 max-w-md -translate-y-20 translate-x-10">
             <div className="text-base font-medium text-slate-800">
               {confirm ? (
                 'Starting a speedrun will reset your collected coins and progress. Milestone coins will be auto-collected during a speedrun. Ready to start?'
@@ -102,7 +111,7 @@ export default function BunnyIntro({ onFinish, milestone, unlockAchievement, con
                 : introSteps[step].text)
               }
             </div>
-            <div className="mt-3 flex items-center justify-end gap-2">
+            <div className="mt-3 flex items-center justify-between gap-2">
               {confirm ? (
                 <>
                   <button className="px-3 py-1 rounded-lg bg-gray-200 text-slate-700 text-sm" onClick={() => {
@@ -115,7 +124,12 @@ export default function BunnyIntro({ onFinish, milestone, unlockAchievement, con
                   }}>Start</button>
                 </>
               ) : (milestone !== undefined && milestone !== null ? (
-                <SpecialButton />
+                <>
+                  <SpecialButton />
+                  <button className="px-3 py-1 rounded-lg bg-amber-400 text-white text-sm" disabled={delivered} onClick={() => { deliverCoin(); }}>
+                    Thanks
+                  </button>
+                </>
               ) : (
                 <button className="px-4 py-2 rounded-lg bg-slate-600 hover:bg-slate-700 text-white text-sm" onClick={handleNext}>
                   {step < introSteps.length - 1 ? 'Next' : 'Start'}

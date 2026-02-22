@@ -33,18 +33,38 @@ export default function AchievementList({ achievements, unlocked, bestSpeedrun, 
 
   const renderCoin = (ach, idx) => {
     const isUnlocked = unlocked.includes(ach.id);
-    const bg = isUnlocked ? pastelColors[idx % pastelColors.length] : 'bg-gray-100';
-    const border = isUnlocked ? 'border-slate-300' : 'border-gray-200';
-    const textColor = isUnlocked ? 'text-slate-800' : 'text-gray-400';
+    const isSpecial = special.includes(ach);
+    if (isUnlocked) {
+      if (isSpecial) {
+        return (
+          <li key={ach.id} title={ach.name} className={`flex items-center justify-center w-10 h-10 rounded-full bg-amber-400 border-2 border-amber-600 text-white shadow-lg transition duration-200 hover:scale-110`}>
+            <span className="text-xl">{coinForId(ach.id)}</span>
+          </li>
+        );
+      }
+      const bg = pastelColors[idx % pastelColors.length];
+      const border = 'border-slate-300';
+      const textColor = 'text-slate-800';
+      return (
+        <li key={ach.id} title={ach.name} className={`flex items-center justify-center w-12 h-12 rounded-full shadow-sm border ${bg} ${border} ${textColor} transition duration-200 hover:scale-110`}>
+          <Coins className="text-amber-500" size={18} />
+        </li>
+      );
+    }
+    // locked
+    if (isSpecial) {
+      return (
+        <li key={ach.id} title={ach.name} className={`flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 border-2 border-gray-200 text-gray-300 shadow-sm transition duration-200`}>
+          <Lock className="text-gray-300" size={16} />
+        </li>
+      );
+    }
+    const bg = 'bg-gray-100';
+    const border = 'border-gray-200';
+    const textColor = 'text-gray-400';
     return (
-      <li
-        key={ach.id}
-        title={ach.name}
-        className={`flex items-center justify-center w-12 h-12 rounded-full shadow-sm border ${bg} ${border} ${textColor} transition duration-200 hover:scale-110`}
-      >
-        {isUnlocked
-          ? (special.includes(ach) ? <span className="text-2xl">{coinForId(ach.id)}</span> : <Coins className="text-amber-500" size={18} />)
-          : <Lock className="text-gray-300" size={16} />}
+      <li key={ach.id} title={ach.name} className={`flex items-center justify-center w-12 h-12 rounded-full shadow-sm border ${bg} ${border} ${textColor} transition duration-200`}>
+        <Lock className="text-gray-300" size={16} />
       </li>
     );
   };

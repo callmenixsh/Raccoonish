@@ -181,7 +181,7 @@ function App() {
       toast.success(
         <div className="flex items-center gap-2">
           <Coins className="text-amber-400" size={18} />
-          <span className="font-semibold">Coin found!</span>
+          <span className="font-semibold">+1</span>
         </div>,
         {
           position: 'top-right',
@@ -385,7 +385,7 @@ function App() {
               newestOnTop={true}
               toastClassName="bg-white dark:bg-black border-amber-200 rounded-lg shadow-md overflow-hidden"
               bodyClassName="p-2 text-slate-800"
-              style={{ maxWidth: '360px', right: '1rem', zIndex: 99999 }}
+              style={{ maxWidth: '300px', right: '1rem', zIndex: 99999 }}
             />
           </div>
       </main>
