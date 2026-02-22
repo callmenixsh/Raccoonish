@@ -18,11 +18,14 @@ const introSteps = [
 export default function BunnyIntro({ onFinish, milestone, unlockAchievement, confirm, onConfirm, onCancel }) {
   const [step, setStep] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [delivered, setDelivered] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(t);
   }, []);
-  const [delivered, setDelivered] = useState(false);
+  useEffect(() => {
+    setDelivered(false);
+  }, [milestone]);
   const coinIcons = {1: '🪙', 10: '🥇', 20: '⭐', 30: '🏅', 50: '👑', 100: '💎', 150: '✨', 200: '🎖️'};
   const coinFor = (m) => (m ? coinIcons[m] || '🪙' : '🪙');
   const SpecialButton = () => (

@@ -244,6 +244,7 @@ function App() {
   const resetAchievements = () => {
     setAchievements([]);
     localStorage.removeItem('achievements');
+    window.location.reload();
   };
 
   const tabData = [
