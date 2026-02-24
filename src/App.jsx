@@ -244,7 +244,11 @@ function App() {
   const resetAchievements = () => {
     setAchievements([]);
     localStorage.removeItem('achievements');
-    window.location.reload();
+    setDeliveredMilestones([]);
+    setShowMilestoneGuide(false);
+    setSpeedrunActive(false);
+    setSpeedrunStart(null);
+    setSpeedrunElapsed(0);
   };
 
   const tabData = [
